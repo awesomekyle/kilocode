@@ -435,9 +435,10 @@
 		},
 		"reasoningEffort": {
 			"label": "Model Reasoning Effort",
-			"high": "High",
+			"minimal": "Minimal",
+			"low": "Low",
 			"medium": "Medium",
-			"low": "Low"
+			"high": "High"
 		},
 		"verbosity": {
 			"label": "Output Verbosity",

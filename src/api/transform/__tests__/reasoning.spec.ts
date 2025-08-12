@@ -158,7 +158,7 @@ describe("reasoning.ts", () => {
 		})
 
 		it("should handle all reasoning effort values", () => {
-			const efforts: Array<"low" | "medium" | "high"> = ["low", "medium", "high"]
+			const efforts: Array<"minimal" | "low" | "medium" | "high"> = ["minimal", "low", "medium", "high"] // kilocode_change
 
 			efforts.forEach((effort) => {
 				const modelWithEffort: ModelInfo = {
@@ -474,7 +474,7 @@ describe("reasoning.ts", () => {
 		})
 
 		it("should handle all reasoning effort values", () => {
-			const efforts: Array<"low" | "medium" | "high"> = ["low", "medium", "high"]
+			const efforts: Array<"minimal" | "low" | "medium" | "high"> = ["minimal", "low", "medium", "high"] // kilocode_change
 
 			efforts.forEach((effort) => {
 				const modelWithEffort: ModelInfo = {

@@ -2,11 +2,22 @@ import { BetaThinkingConfigParam } from "@anthropic-ai/sdk/resources/beta"
 import OpenAI from "openai"
 import type { GenerateContentConfig } from "@google/genai"
 
-import type { ModelInfo, ProviderSettings } from "@roo-code/types"
+import type { ModelInfo, ProviderSettings, ReasoningEffort } from "@roo-code/types" // kilocode_change
 
 import { shouldUseReasoningBudget, shouldUseReasoningEffort } from "../../shared/api"
 
-type ReasoningEffort = "low" | "medium" | "high"
+// kilocode_change - removed local ReasoningEffort type definition, now imported from @roo-code/types
+
+// kilocode_change start
+// Helper function to convert our internal ReasoningEffort type to OpenAI SDK's supported values
+function convertReasoningEffortToOpenAI(effort: ReasoningEffort | undefined): OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"] {
+	if (effort === "minimal") {
+		// For now, map "minimal" to "low" until OpenAI SDK supports it
+		return "low" as any;
+	}
+	return effort as OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"];
+}
+// kilocode_change end
 
 export type OpenRouterReasoningParams = {
 	effort?: ReasoningEffort
@@ -51,7 +62,7 @@ export const getOpenAiReasoning = ({
 	reasoningEffort,
 	settings,
 }: GetModelReasoningOptions): OpenAiReasoningParams | undefined =>
-	shouldUseReasoningEffort({ model, settings }) ? { reasoning_effort: reasoningEffort } : undefined
+	shouldUseReasoningEffort({ model, settings }) ? { reasoning_effort: convertReasoningEffortToOpenAI(reasoningEffort) } : undefined // kilocode_change
 
 export const getGeminiReasoning = ({
 	model,
