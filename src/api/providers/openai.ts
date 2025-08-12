@@ -8,6 +8,7 @@ import {
 	openAiModelInfoSaneDefaults,
 	DEEP_SEEK_DEFAULT_TEMPERATURE,
 	OPENAI_AZURE_AI_INFERENCE_PATH,
+	ReasoningEffort, // kilocode_change
 } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
@@ -23,6 +24,17 @@ import { getModelParams } from "../transform/model-params"
 import { DEFAULT_HEADERS } from "./constants"
 import { BaseProvider } from "./base-provider"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
+
+// kilocode_change start
+// Helper function to convert our internal ReasoningEffort type to OpenAI SDK's supported values
+function convertReasoningEffortToOpenAI(effort: ReasoningEffort | undefined): OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"] {
+	if (effort === "minimal") {
+		// For now, map "minimal" to "low" until OpenAI SDK supports it
+		return "low" as any;
+	}
+	return effort as OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"];
+}
+// kilocode_change end
 
 // TODO: Rename this to OpenAICompatibleHandler. Also, I think the
 // `OpenAINativeHandler` can subclass from this, since it's obviously
@@ -305,7 +317,7 @@ export class OpenAiHandler extends BaseProvider implements SingleCompletionHandl
 				],
 				stream: true,
 				...(isGrokXAI ? {} : { stream_options: { include_usage: true } }),
-				reasoning_effort: modelInfo.reasoningEffort,
+				reasoning_effort: convertReasoningEffortToOpenAI(modelInfo.reasoningEffort), // kilocode_change
 				temperature: undefined,
 			}
 
@@ -330,7 +342,7 @@ export class OpenAiHandler extends BaseProvider implements SingleCompletionHandl
 					},
 					...convertToOpenAiMessages(messages),
 				],
-				reasoning_effort: modelInfo.reasoningEffort,
+				reasoning_effort: convertReasoningEffortToOpenAI(modelInfo.reasoningEffort), // kilocode_change
 				temperature: undefined,
 			}
 

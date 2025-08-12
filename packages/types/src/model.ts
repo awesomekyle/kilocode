@@ -4,7 +4,7 @@ import { z } from "zod"
  * ReasoningEffort
  */
 
-export const reasoningEfforts = ["low", "medium", "high"] as const
+export const reasoningEfforts = ["minimal", "low", "medium", "high"] as const // kilocode_change
 
 export const reasoningEffortsSchema = z.enum(reasoningEfforts)
 

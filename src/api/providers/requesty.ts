@@ -1,7 +1,7 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 
-import { type ModelInfo, requestyDefaultModelId, requestyDefaultModelInfo } from "@roo-code/types"
+import { type ModelInfo, requestyDefaultModelId, requestyDefaultModelInfo, ReasoningEffort } from "@roo-code/types" // kilocode_change
 
 import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
 import { calculateApiCostOpenAI } from "../../shared/cost"
@@ -15,6 +15,17 @@ import { DEFAULT_HEADERS } from "./constants"
 import { getModels } from "./fetchers/modelCache"
 import { BaseProvider } from "./base-provider"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
+
+// kilocode_change start
+// Helper function to convert our internal ReasoningEffort type to OpenAI SDK's supported values
+function convertReasoningEffortToOpenAI(effort: ReasoningEffort | undefined): OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"] {
+	if (effort === "minimal") {
+		// For now, map "minimal" to "low" until OpenAI SDK supports it
+		return "low" as any;
+	}
+	return effort as OpenAI.Chat.ChatCompletionCreateParams["reasoning_effort"];
+}
+// kilocode_change end
 
 // Requesty usage includes an extra field for Anthropic use cases.
 // Safely cast the prompt token details section to the appropriate structure.
@@ -116,7 +127,7 @@ export class RequestyHandler extends BaseProvider implements SingleCompletionHan
 			model,
 			max_tokens,
 			temperature,
-			...(reasoning_effort && { reasoning_effort }),
+			...(reasoning_effort && { reasoning_effort: convertReasoningEffortToOpenAI(reasoning_effort) }), // kilocode_change
 			...(thinking && { thinking }),
 			stream: true,
 			stream_options: { include_usage: true },

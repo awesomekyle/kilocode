@@ -2,6 +2,7 @@ import {
 	type ModelInfo,
 	type ProviderSettings,
 	type VerbosityLevel,
+	type ReasoningEffort, // kilocode_change
 	ANTHROPIC_DEFAULT_MAX_TOKENS,
 } from "@roo-code/types"
 
@@ -38,7 +39,7 @@ type GetModelParamsOptions<T extends Format> = {
 type BaseModelParams = {
 	maxTokens: number | undefined
 	temperature: number | undefined
-	reasoningEffort: "low" | "medium" | "high" | undefined
+	reasoningEffort: ReasoningEffort | undefined // kilocode_change
 	reasoningBudget: number | undefined
 	verbosity: VerbosityLevel | undefined
 }
